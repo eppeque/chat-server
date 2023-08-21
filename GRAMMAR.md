@@ -20,7 +20,7 @@ Here is the message to send a message to all other connected clients:
 
 ## Receive a message
 
-Here is the message the client will recieve for a new message:
+Here is the message the client will receive for a new message:
 
 ```
 +MSG <SENDER_USERNAME> <MESSAGE_CONTENT>\r\n
