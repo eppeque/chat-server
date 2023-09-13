@@ -4,15 +4,13 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"sync"
 
 	"github.com/eppeque/chat-server/lib"
 )
 
-type ThreadCounter struct {
-	v  int
-	mu sync.Mutex
-}
+var (
+	threadCounter *lib.ThreadCounter = lib.NewThreadCounter()
+)
 
 func main() {
 	ln, err := net.Listen("tcp", ":8080")
@@ -25,7 +23,7 @@ func main() {
 	fmt.Println("Server is listening on port 8080...")
 
 	dispatcher := lib.NewDispatcher()
-	idCounter := 0
+	id := 0
 	for {
 		conn, err := ln.Accept()
 
@@ -34,16 +32,19 @@ func main() {
 			os.Exit(1)
 		}
 
-		go handleConnection(conn, idCounter, dispatcher)
-		idCounter++
+		go handleConnection(conn, id, dispatcher)
+		id++
 	}
 }
 
 func handleConnection(conn net.Conn, id int, dispatcher *lib.Dispatcher) {
-	fmt.Printf("Thread #%d created\n", id)
+	threadCounter.Inc()
+	counter := threadCounter.Value()
+	fmt.Printf("Thread #%d created\n", counter)
 
 	client := lib.NewClient(conn, id)
 	client.Listen(dispatcher)
 
-	fmt.Printf("Thread #%d terminated\n", id)
+	fmt.Printf("Thread #%d terminated\n", counter)
+	threadCounter.Dec()
 }
