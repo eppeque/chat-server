@@ -10,6 +10,7 @@ import (
 
 var (
 	threadCounter *lib.ThreadCounter = lib.NewThreadCounter()
+	dispatcher    *lib.Dispatcher    = lib.NewDispatcher()
 )
 
 func main() {
@@ -22,7 +23,6 @@ func main() {
 
 	fmt.Println("Server is listening on port 8080...")
 
-	dispatcher := lib.NewDispatcher()
 	id := 0
 	for {
 		conn, err := ln.Accept()
@@ -32,12 +32,12 @@ func main() {
 			os.Exit(1)
 		}
 
-		go handleConnection(conn, id, dispatcher)
+		go handleConnection(conn, id)
 		id++
 	}
 }
 
-func handleConnection(conn net.Conn, id int, dispatcher *lib.Dispatcher) {
+func handleConnection(conn net.Conn, id int) {
 	threadCounter.Inc()
 	counter := threadCounter.Value()
 	fmt.Printf("Thread #%d created\n", counter)
