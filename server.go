@@ -21,7 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Server is listening on port 8080...")
+	fmt.Println("Server listening on port 8080...")
 
 	id := 0
 	for {
@@ -39,12 +39,11 @@ func main() {
 
 func handleConnection(conn net.Conn, id int) {
 	threadCounter.Inc()
-	counter := threadCounter.Value()
-	fmt.Printf("Thread #%d created\n", counter)
+	fmt.Printf("[INFO] - Thread created. %d thread(s) running.\n", threadCounter.Value())
 
 	client := lib.NewClient(conn, id)
 	client.Listen(dispatcher)
 
-	fmt.Printf("Thread #%d terminated\n", counter)
 	threadCounter.Dec()
+	fmt.Printf("[INFO] - Thread terminated. %d thread(s) running.\n", threadCounter.Value())
 }

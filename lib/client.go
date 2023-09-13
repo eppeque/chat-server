@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"net"
 	"strings"
 )
@@ -32,6 +33,10 @@ func (c *Client) Listen(dispatcher *Dispatcher) {
 		bytes = bytes[:n]
 		message := string(bytes)
 		message = strings.TrimSpace(message)
+
+		if len(message) != 0 {
+			fmt.Printf("[%v] - %v\n", c.conn.RemoteAddr().String(), message)
+		}
 
 		if len(username) == 0 {
 			// Handle +REGISTER...
