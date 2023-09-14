@@ -5,13 +5,13 @@ import (
 	"net"
 	"os"
 
-	"github.com/eppeque/chat-server/lib"
+	"github.com/eppeque/chat-server/thread"
 	"github.com/fatih/color"
 )
 
 var (
-	threadCounter *lib.ThreadCounter = lib.NewThreadCounter()
-	dispatcher    *lib.Dispatcher    = lib.NewDispatcher()
+	threadCounter *thread.ThreadCounter = thread.NewThreadCounter()
+	dispatcher    *thread.Dispatcher    = thread.NewDispatcher()
 )
 
 func main() {
@@ -42,9 +42,10 @@ func handleConnection(conn net.Conn, id int) {
 	threadCounter.Inc()
 	fmt.Printf("[INFO] - Thread created. %d thread(s) running.\n", threadCounter.Value())
 
-	client := lib.NewClient(conn, id)
-	client.Listen(dispatcher)
+	client := thread.NewClient(id, conn, dispatcher)
+	client.Listen()
 
 	threadCounter.Dec()
 	fmt.Printf("[INFO] - Thread terminated. %d thread(s) running.\n", threadCounter.Value())
+	conn.Close()
 }

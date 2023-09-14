@@ -1,4 +1,4 @@
-package lib
+package thread
 
 import (
 	"sync"
@@ -26,4 +26,5 @@ func (d *Dispatcher) DispatchMessage(room, username, message string) {
 	for _, client := range d.clients[room] {
 		client.SendMessage(message)
 	}
+	d.mu.Unlock()
 }
