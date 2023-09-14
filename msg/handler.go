@@ -17,7 +17,7 @@ func Register(msg string) (username, room string, err error) {
 		return "", "", errors.New("invalid format")
 	}
 
-	username = groups[1]
-	room = groups[2]
+	username = groups[2]
+	room = groups[3]
 	return
 }
