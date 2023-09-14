@@ -44,8 +44,7 @@ func (c *Client) Listen() {
 		if len(c.username) == 0 {
 			c.handleRegister(message)
 		} else {
-			// Handle +MSGS...
-			c.dispatcher.DispatchMessage(c.room, c.username, message)
+			c.handleMsgs(message)
 		}
 	}
 }
@@ -62,14 +61,29 @@ func (c *Client) handleRegister(message string) {
 	if err != nil {
 		errMessage := msg.Err(err.Error())
 		c.SendMessage(errMessage)
-	} else {
-		c.username = username
-		c.room = room
-
-		okMessage := msg.Ok("You're now registered!")
-		c.SendMessage(okMessage)
-		c.dispatcher.RegisterClient(room, c)
+		return
 	}
+
+	c.username = username
+	c.room = room
+
+	okMessage := msg.Ok("You're now registered!")
+	c.SendMessage(okMessage)
+	c.dispatcher.RegisterClient(room, c)
+
+}
+
+func (c *Client) handleMsgs(message string) {
+	content, err := msg.Msgs(message)
+
+	if err != nil {
+		errMessage := msg.Err(err.Error())
+		c.SendMessage(errMessage)
+		return
+	}
+
+	message = msg.Msg(c.username, content)
+	c.dispatcher.DispatchMessage(message, c)
 }
 
 func (c *Client) SendMessage(message string) {

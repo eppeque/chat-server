@@ -21,10 +21,12 @@ func (d *Dispatcher) RegisterClient(room string, client *Client) {
 	d.mu.Unlock()
 }
 
-func (d *Dispatcher) DispatchMessage(room, username, message string) {
+func (d *Dispatcher) DispatchMessage(message string, sender *Client) {
 	d.mu.Lock()
-	for _, client := range d.clients[room] {
-		client.SendMessage(message)
+	for _, client := range d.clients[sender.room] {
+		if client.id != sender.id {
+			defer client.SendMessage(message)
+		}
 	}
 	d.mu.Unlock()
 }

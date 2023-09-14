@@ -9,3 +9,7 @@ func Err(content string) string {
 func Ok(content string) string {
 	return fmt.Sprintf("+OK %v\r\n", content)
 }
+
+func Msg(sender, content string) string {
+	return fmt.Sprintf("+MSG %v %v\r\n", sender, content)
+}
