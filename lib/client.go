@@ -1,9 +1,10 @@
 package lib
 
 import (
-	"fmt"
 	"net"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 type Client struct {
@@ -35,7 +36,7 @@ func (c *Client) Listen(dispatcher *Dispatcher) {
 		message = strings.TrimSpace(message)
 
 		if len(message) != 0 {
-			fmt.Printf("[%v] - %v\n", c.conn.RemoteAddr().String(), message)
+			color.Blue("[%v] - %v\n", c.conn.RemoteAddr().String(), message)
 		}
 
 		if len(username) == 0 {

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/eppeque/chat-server/lib"
+	"github.com/fatih/color"
 )
 
 var (
@@ -17,18 +18,18 @@ func main() {
 	ln, err := net.Listen("tcp", ":8080")
 
 	if err != nil {
-		fmt.Println("Couldn't start the server", err)
+		color.Red("Couldn't start the server", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Server listening on port 8080...")
+	color.Green("Server listening on port 8080...")
 
 	id := 0
 	for {
 		conn, err := ln.Accept()
 
 		if err != nil {
-			fmt.Println("Couldn't accept TCP connection", err)
+			color.Red("Couldn't accept TCP connection", err)
 			os.Exit(1)
 		}
 
