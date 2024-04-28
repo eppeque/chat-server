@@ -10,26 +10,24 @@ In order to communicate with this server, any client must respect [the defined g
 
 ## Getting Started
 
-### 1. Download the source code
+### 1. Prerequisites
 
-You clone this repository and download the source code with the following command:
+Since this server is written in Go, you'll need the [Go toolchain](https://go.dev/dl) to build and run this project.
+
+### 2. Build
+
+You can download the source code and build the project with a single command:
 
 ```bash
-git clone https://github.com/eppeque/chat-server
+go install https://github.com/eppeque/chat-server
 ```
 
-### 2. Run & build
+### 3. Run
 
-You can run the development version of the server with the following command:
-
-```bash
-go run .
-```
-
-And you can build an optimized executable with the following command:
+Run the installed executable with the following command:
 
 ```bash
-go build
+chat-server
 ```
 
 ## Usage
