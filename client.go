@@ -44,7 +44,8 @@ func (c *Client) handleLine(line string) {
 	mType, err := messages.DetectType(line)
 
 	if err != nil {
-		c.SendMessage(err.Error())
+		res := messages.Err(err.Error())
+		c.SendMessage(res)
 	}
 
 	if c.state == models.New {
@@ -65,7 +66,8 @@ func (c *Client) handleRegister(line string) {
 	username, salt, hash, err := messages.ScanRegister(line)
 
 	if err != nil {
-		c.SendMessage(err.Error())
+		res := messages.Err(err.Error())
+		c.SendMessage(res)
 	}
 
 	c.auth.Register(username, salt, hash)
