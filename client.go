@@ -55,10 +55,11 @@ func (c *Client) handleLine(line string) {
 		case messages.Login:
 			c.handleLogin(line)
 		}
-	}
-
-	if c.state == models.AuthProcess && mType == messages.Confirm {
+	} else if c.state == models.AuthProcess && mType == messages.Confirm {
 		c.handleConfirm(line)
+	} else {
+		res := messages.Ok("Not implemented yet")
+		c.SendMessage(res)
 	}
 }
 
@@ -70,7 +71,14 @@ func (c *Client) handleRegister(line string) {
 		c.SendMessage(res)
 	}
 
-	c.auth.Register(username, salt, hash)
+	err = c.auth.Register(username, salt, hash)
+
+	if err != nil {
+		res := messages.Err(err.Error())
+		c.SendMessage(res)
+	}
+
+	c.state = models.Authenticated
 }
 
 func (c *Client) handleLogin(line string) {

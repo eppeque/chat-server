@@ -6,6 +6,7 @@ import (
 
 type AuthManager struct {
 	challenge string
+	username  string
 }
 
 const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -18,8 +19,16 @@ func (a *AuthManager) Challenge() string {
 	return a.challenge
 }
 
-func (a *AuthManager) Register(username, salt, hash string) {
-	// TODO: Save the user
+func (a *AuthManager) Register(username, salt, hash string) error {
+	user := NewUser(username, salt, hash)
+	err := UserRepo.AddUser(user)
+
+	if err != nil {
+		return err
+	}
+
+	a.username = username
+	return nil
 }
 
 func generateChallenge() string {

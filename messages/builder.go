@@ -9,3 +9,7 @@ func Hello(challenge string) string {
 func Err(message string) string {
 	return fmt.Sprintf("-ERR %s\r\n", message)
 }
+
+func Ok(message string) string {
+	return fmt.Sprintf("+OK %s\r\n", message)
+}
