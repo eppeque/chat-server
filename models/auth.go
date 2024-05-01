@@ -15,10 +15,6 @@ func NewAuthManager() *AuthManager {
 	return &AuthManager{challenge: generateChallenge()}
 }
 
-func (a *AuthManager) Challenge() string {
-	return a.challenge
-}
-
 func (a *AuthManager) Register(username, salt, hash string) error {
 	user := NewUser(username, salt, hash)
 	err := UserRepo.AddUser(user)
