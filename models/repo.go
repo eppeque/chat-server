@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"sync"
 )
 
 type UserRepository struct {
 	Users []*User `json:"users"`
+	mu    sync.Mutex
 }
 
 const fileName = "users.json"
@@ -36,8 +38,10 @@ func (r *UserRepository) AddUser(user *User) error {
 		return errors.New("the username is already taken")
 	}
 
+	r.mu.Lock()
 	updated := append(r.Users, user)
 	r.Users = updated
+	r.mu.Unlock()
 
 	r.writeToFile()
 	return nil
@@ -54,7 +58,9 @@ func (r *UserRepository) isUsernameTaken(username string) bool {
 }
 
 func (r *UserRepository) writeToFile() {
+	r.mu.Lock()
 	bytes, err := json.Marshal(r)
+	r.mu.Unlock()
 
 	if err != nil {
 		return
@@ -64,7 +70,7 @@ func (r *UserRepository) writeToFile() {
 }
 
 func initEmpty() *UserRepository {
-	repo := &UserRepository{[]*User{}}
+	repo := &UserRepository{Users: []*User{}}
 	repo.writeToFile()
 	return repo
 }
