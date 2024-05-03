@@ -48,6 +48,9 @@ func (r *UserRepository) AddUser(user *User) error {
 }
 
 func (r *UserRepository) isUsernameTaken(username string) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	for _, user := range r.Users {
 		if user.Username == username {
 			return true
