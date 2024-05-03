@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"math/rand"
 )
 
@@ -25,6 +26,16 @@ func (a *AuthManager) Register(username, salt, hash string) error {
 
 	a.username = username
 	return nil
+}
+
+func (a *AuthManager) Login(username string) (string, error) {
+	user := UserRepo.GetUser(username)
+
+	if user != nil {
+		return user.Salt, nil
+	}
+
+	return "", errors.New("no user found with the given username")
 }
 
 func generateChallenge() string {

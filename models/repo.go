@@ -8,7 +8,7 @@ import (
 )
 
 type UserRepository struct {
-	Users []*User `json:"users"`
+	Users map[string]*User `json:"users"`
 	mu    sync.Mutex
 }
 
@@ -33,14 +33,17 @@ func newRepoFromFile() *UserRepository {
 	return &repo
 }
 
+func (r *UserRepository) GetUser(username string) *User {
+	return r.Users[username]
+}
+
 func (r *UserRepository) AddUser(user *User) error {
 	if r.isUsernameTaken(user.Username) {
 		return errors.New("the username is already taken")
 	}
 
 	r.mu.Lock()
-	updated := append(r.Users, user)
-	r.Users = updated
+	r.Users[user.Username] = user
 	r.mu.Unlock()
 
 	r.writeToFile()
@@ -73,7 +76,7 @@ func (r *UserRepository) writeToFile() {
 }
 
 func initEmpty() *UserRepository {
-	repo := &UserRepository{Users: []*User{}}
+	repo := &UserRepository{Users: make(map[string]*User)}
 	repo.writeToFile()
 	return repo
 }

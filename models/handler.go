@@ -87,7 +87,23 @@ func (h *MessageHandler) handleRegister(line string) {
 }
 
 func (h *MessageHandler) handleLogin(line string) {
-	// TODO: Implement
+	username, err := messages.ScanLogin(line)
+
+	if err != nil {
+		h.sendError(err)
+		return
+	}
+
+	salt, err := h.auth.Login(username)
+
+	if err != nil {
+		h.sendError(err)
+		return
+	}
+
+	h.state = AuthProcess
+	res := messages.Params(salt)
+	h.sender.SendMessage(res)
 }
 
 func (h *MessageHandler) handleConfirm(line string) {
