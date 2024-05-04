@@ -40,7 +40,7 @@ func (h *MessageHandler) HandleLine(line string) {
 	} else if h.state == AuthProcess && mType == messages.Confirm {
 		h.handleConfirm(line)
 	} else {
-		res := messages.Err("Not implemented yet")
+		res := messages.Err("The message is valid but shouldn't be sent in the current state of the client")
 		h.sender.SendMessage(res)
 	}
 }
@@ -107,5 +107,20 @@ func (h *MessageHandler) handleLogin(line string) {
 }
 
 func (h *MessageHandler) handleConfirm(line string) {
-	// TODO: Implement
+	challenge, err := messages.ScanConfirm(line)
+
+	if err != nil {
+		h.sendError(err)
+		return
+	}
+
+	if h.auth.Confirm(challenge) {
+		h.state = Authenticated
+		res := messages.Ok("Successfull authentication")
+		h.sender.SendMessage(res)
+		return
+	}
+
+	res := messages.Err("The challenge is not correct")
+	h.sender.SendMessage(res)
 }
