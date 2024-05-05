@@ -113,7 +113,7 @@ MSGS <CONTENT>\r\n
 
 ### MSG
 
-This message notifies the client that a new message has arrived:
+This message notifies the client that a new message has been sent:
 
 ```
 MSG <AUTHOR> <CONTENT>\r\n

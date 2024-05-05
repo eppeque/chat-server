@@ -30,9 +30,17 @@ func (c *Client) Listen() {
 		line := scanner.Text()
 		line = strings.TrimSpace(line)
 
+		if line == "" {
+			continue
+		}
+
 		log.Printf("%v - %s\n", c.conn.RemoteAddr(), line)
 		c.handler.HandleLine(line)
 	}
+}
+
+func (c *Client) Id() int {
+	return c.id
 }
 
 func (c *Client) SendMessage(message string) {

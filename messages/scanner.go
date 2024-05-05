@@ -37,3 +37,14 @@ func ScanConfirm(line string) (string, error) {
 
 	return groups[1], nil
 }
+
+func ScanCreate(line string) (string, error) {
+	re := regexp.MustCompile(RxCreate)
+	groups := re.FindStringSubmatch(line)
+
+	if groups == nil {
+		return "", errors.New("invalid format")
+	}
+
+	return groups[1], nil
+}

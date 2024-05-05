@@ -47,7 +47,6 @@ func (a *AuthManager) Confirm(challenge string) bool {
 	user := UserRepo.GetUser(a.tempUsername)
 	result := fmt.Sprintf("%s$2b$12$%s%s", a.challenge, user.Salt, user.Hash)
 	result = hashChallenge(result)
-	fmt.Println(challenge, result)
 
 	if challenge == result {
 		a.username = user.Username

@@ -39,6 +39,13 @@ func (h *MessageHandler) HandleLine(line string) {
 		}
 	} else if h.state == AuthProcess && mType == messages.Confirm {
 		h.handleConfirm(line)
+	} else if h.state == Authenticated {
+		switch mType {
+		case messages.Create:
+			h.handleCreate(line)
+		case messages.Join:
+			h.handleJoin(line)
+		}
 	} else {
 		res := messages.Err("The message is valid but shouldn't be sent in the current state of the client")
 		h.sender.SendMessage(res)
@@ -56,6 +63,14 @@ func (h *MessageHandler) detectType(line string) (messages.MessageType, error) {
 
 	if strings.HasPrefix(line, "CONFIRM") {
 		return messages.Confirm, nil
+	}
+
+	if strings.HasPrefix(line, "CREATE") {
+		return messages.Create, nil
+	}
+
+	if strings.HasPrefix(line, "JOIN") {
+		return messages.Join, nil
 	}
 
 	return -1, errors.New("the given line doesn't correspond to any type")
@@ -123,4 +138,21 @@ func (h *MessageHandler) handleConfirm(line string) {
 
 	res := messages.Err("The challenge is not correct")
 	h.sender.SendMessage(res)
+}
+
+func (h *MessageHandler) handleCreate(line string) {
+	room, err := messages.ScanCreate(line)
+
+	if err != nil {
+		h.sendError(err)
+		return
+	}
+
+	id := Router.CreateRoom(room, h.sender)
+	res := messages.Ok(id)
+	h.sender.SendMessage(res)
+}
+
+func (h *MessageHandler) handleJoin(line string) {
+	// TODO: Implement this method...
 }
